@@ -9,10 +9,11 @@ before_install:
 
 install:
   - docker run -d -p 127.0.0.1:8000:8000 sbml bash -c "python /opt/sbml/manage.py runserver 0.0.0.0:8000"
-  - easy_install
+
+before_script:
   - easy_install nose
   - easy_install flake8
-  
+
 script:
   - nosetests --exe /opt/sbml
   - flake8 /opt/sbml
