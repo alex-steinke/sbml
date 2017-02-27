@@ -1,4 +1,6 @@
-#https://travis-ci.com/alex-steinke/sbml
+# CSC8311: Advanced Programming for Biologists - A.Steinke
+# Travis CI
+# https://travis-ci.com/alex-steinke/sbml
 sudo: required
 
 services:
@@ -15,5 +17,5 @@ before_script:
   - easy_install flake8
 
 script:
-  - nosetests #--exe /opt/sbml
-  - flake8 #/opt/sbml
+  - nosetests
+  - flake8 --ignore=E501
