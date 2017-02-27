@@ -1,0 +1,21 @@
+# CSC8311: Advanced Programming for Biologists - A.Steinke
+# Travis CI
+# https://travis-ci.com/alex-steinke/sbml
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - docker build -t sbml .
+
+install:
+  - docker run -d -p 127.0.0.1:8000:8000 sbml bash -c "python /opt/sbml/manage.py runserver 0.0.0.0:8000"
+
+before_script:
+  - easy_install nose
+  - easy_install flake8
+
+script:
+  - nosetests
+  - flake8 --ignore=E501
