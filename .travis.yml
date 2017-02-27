@@ -15,5 +15,5 @@ before_script:
   - easy_install flake8
 
 script:
-  - nosetests --exe /opt/sbml
-  - flake8 /opt/sbml
+  - nosetests #--exe /opt/sbml
+  - flake8 #/opt/sbml
