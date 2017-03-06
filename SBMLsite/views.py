@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.template import loader
-from SBMLshort.sbml import *
+from SBMLshort.sbml import UnitDefinition, Unit
+
 
 def index(request):
     template = loader.get_template('index.html')

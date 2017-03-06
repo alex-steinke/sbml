@@ -24,12 +24,12 @@ SECRET_KEY = 'r36tie^t5jy^d%-@f*q+&y*_n7!#9p@-pvg8cqjpvjdg*mrkyb'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-#########################################################################
-#######    A. Steinke - Hosts for Docker to work                     ####
-#########################################################################
+##########################################################################
+# ######    A. Steinke - Hosts for Docker to work                     ####
+##########################################################################
 ALLOWED_HOSTS = ['0.0.0.0',
                  '192.168.99.100']
-#########################################################################
+##########################################################################
 
 # Application definition
 
@@ -42,9 +42,9 @@ INSTALLED_APPS = [
     'SBMLsite'
 ]
 
-#########################################################################
-#######    A. Steinke - Session Middlware and PickleSerializer       ####
-#########################################################################
+##########################################################################
+# ######    A. Steinke - Session Middlware and PickleSerializer       ####
+##########################################################################
 MIDDLEWARE = ['django.contrib.sessions.middleware.SessionMiddleware']
 SESSION_ENGINE = "django.contrib.sessions.backends.file"
 SESSION_FILE_PATH = os.path.join(BASE_DIR, 'tmp')
@@ -52,7 +52,7 @@ SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 ROOT_URLCONF = 'SBMLsite.urls'
 SESSION_COOKIE_AGE = 20 * 60
 SESSION_SAVE_EVERY_REQUEST = True
-##########################################################################
+###########################################################################
 
 TEMPLATES = [
     {
