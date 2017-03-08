@@ -12,17 +12,24 @@ class SbmlObject(object):
                           default=lambda o: {c[0]: c[1] for c in o.dict()})
 
 
-class Model:
-    def __init__(self, name, substance_units, time_units, volume_units,
-                 area_units, length_units, extent_units, conversion_factor):
+class Model(SbmlObject):
+    def __init__(self, mid, name=None, substance_units=None, time_units=None,
+                 volume_units=None, area_units=None, length_units=None,
+                 extent_units=None, conversion_factor=None):
+        self.id = mid
         self.name = name
-        self.s = substance_units
-        self.t = time_units
-        self.v = volume_units
-        self.a = area_units
-        self.l = length_units
-        self.e = extent_units
-        self.c = conversion_factor
+        self.substanceUnits = substance_units
+        self.timeUnits = time_units
+        self.volumeUnits = volume_units
+        self.areaUnits = area_units
+        self.lengthUnits = length_units
+        self.extentUnits = extent_units
+        self.conversionFactor = conversion_factor
+        self.species = []
+        self.parameters = []
+        self.rules = []
+        self.reactions = []
+        self.events = []
 
 
 class Unit(SbmlObject):
@@ -91,9 +98,9 @@ class Species(SbmlObject):
         bool_attr = bool_attr + 'b' if self.boundaryCondition else bool_attr
         bool_attr = bool_attr + 'c' if self.constant else bool_attr
         result = ' %s:%s=%s %s' % (
-        self.compartment, sid, self.initialAmount, bool_attr)
+            self.compartment, sid, self.initialAmount, bool_attr)
         result = '%s "%s"' % (
-        result, self.name) if self.name is not None else result
+            result, self.name) if self.name is not None else result
         return result
 
 
@@ -108,7 +115,7 @@ class Parameter(SbmlObject):
         result = ' %s=%s' % (self.id, self.value)
         result = '%sv' % result if self.constant else result
         result = '%s "%s"' % (
-        result, self.name) if self.name is not None else result
+            result, self.name) if self.name is not None else result
         return result
 
 
@@ -150,6 +157,6 @@ class Reaction(SbmlObject):
             ['%s=%s' % (param.id, param.value) for param in self.params])
         head = '@%s=%s "%s"' % (self.type, self.id,
                                 self.name) if self.name is not None else '@%s=%s' % (
-        self.type, self.id)
+            self.type, self.id)
         result = '%s\n %s -> %s\n %s' % (head, reag, prod, self.body)
         return '%s : %s' % (result, param) if len(param) > 0 else result

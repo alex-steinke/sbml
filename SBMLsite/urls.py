@@ -14,9 +14,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url
-import views
+from views import IndexView
+
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
-    url(r'^test', views.test, name='test'),
+    url('units', IndexView.as_view(), name='units'),
+    url('compartments', IndexView.as_view(), name='compartments'),
+    url('species', IndexView.as_view(), name='species'),
+    url('parameters', IndexView.as_view(), name='parameters'),
+    url('rules', IndexView.as_view(), name='rules'),
+    url('reactions', IndexView.as_view(), name='reactions'),
+    url('events', IndexView.as_view(), name='events'),
+    url(r'^$', IndexView.as_view(), name='model'),
 ]
