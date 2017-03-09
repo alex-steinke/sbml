@@ -48,9 +48,9 @@ class Model(SbmlObject):
 class Unit(SbmlObject):
     def __init__(self, kind=None, exponent=None, scale=None, multiplier=None):
         self.kind = kind
-        self.e = exponent
-        self.s = scale
-        self.m = multiplier
+        self.exponent = exponent
+        self.scale = scale
+        self.multiplier = multiplier
 
     def __str__(self):
         unit_dict = dict(self.dict())
@@ -84,8 +84,10 @@ class UnitDefinition(SbmlObject):
 
 
 class Compartment(SbmlObject):
-    def __init__(self, compid, name=None, size=None, constant=None):
-        self.id = compid
+    vars = ['id', 'name', 'size', 'constant']
+
+    def __init__(self, id, name=None, size=None, constant=None):
+        self.id = id
         self.size = size
         self.constant = constant
         self.name = name

@@ -74,7 +74,7 @@ class EditModelForm(ModelForm):
                 {'class': 'form-control'})
 
 
-class NewUnitDefinitionForm(Form):
+class UnitDefinitionForm(Form):
     id = CharField(
         label="",
         max_length=80,
@@ -84,29 +84,23 @@ class NewUnitDefinitionForm(Form):
         widget=HiddenInput()
     )
 
+    def __init__(self, *args, **kwargs):
+        super(UnitDefinitionForm, self).__init__(*args, **kwargs)
+        self.fields['id'].widget.attrs.update({'class': 'form-control',
+                                               'placeholder': 'Unit Definition ID'})
+
+
+class NewUnitDefinitionForm(UnitDefinitionForm):
     def __init__(self, *args, **kwargs):
         super(NewUnitDefinitionForm, self).__init__(*args, **kwargs)
-        self.fields['id'].widget.attrs.update({'class': 'form-control',
-                                               'placeholder': 'Unit Definition ID'})
 
 
-class EditUnitDefinitionForm(Form):
-    id = CharField(
-        label="",
-        max_length=80,
-        required=True
-    )
-    func = CharField(
-        widget=HiddenInput()
-    )
-
+class EditUnitDefinitionForm(UnitDefinitionForm):
     def __init__(self, *args, **kwargs):
         super(EditUnitDefinitionForm, self).__init__(*args, **kwargs)
-        self.fields['id'].widget.attrs.update({'class': 'form-control',
-                                               'placeholder': 'Unit Definition ID'})
 
 
-class NewUnitForm(Form):
+class UnitForm(Form):
     unit_def = ChoiceField(
         label="Unit Definition",
         required=True
@@ -137,15 +131,65 @@ class NewUnitForm(Form):
     )
 
     def __init__(self, *args, **kwargs):
-        # cant't find a way to set choices for ChoiceField from the view
-        # so here is a workaround
         if 'choices' in kwargs:
             choices = kwargs.pop("choices")
         else:
             choices = None
-        super(NewUnitForm, self).__init__(*args, **kwargs)
+        super(UnitForm, self).__init__(*args, **kwargs)
         if choices:
             self.fields['unit_def'].choices = choices
+        for field_name in self.fields.keys():
+            self.fields[field_name].widget.attrs.update(
+                {'class': 'form-control'})
+
+
+class NewUnitForm(UnitForm):
+    def __init__(self, *args, **kwargs):
+        super(NewUnitForm, self).__init__(*args, **kwargs)
+
+
+class EditUnitForm(UnitForm):
+    old = CharField(
+        label="",
+        widget=HiddenInput()
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(EditUnitForm, self).__init__(*args, **kwargs)
+
+
+class CompartmentForm(Form):
+    id = CharField(
+        label="Compartment ID",
+        max_length=80,
+        required=True,
+    )
+    name = CharField(
+        label="Name",
+        max_length=80,
+        required=False,
+    )
+    size = CharField(
+        label="Size",
+        max_length=80,
+        required=False,
+    )
+    constant = CharField(
+        label="Constant",
+        max_length=80,
+        required=False,
+    )
+    func = CharField(
+        label="",
+        widget=HiddenInput()
+    )
+    old = CharField(
+        label="",
+        widget=HiddenInput()
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(CompartmentForm, self).__init__(*args, **kwargs)
         for field_name in self.fields.keys():
             self.fields[field_name].widget.attrs.update(
                 {'class': 'form-control'})

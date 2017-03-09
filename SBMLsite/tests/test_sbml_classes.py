@@ -29,12 +29,12 @@ class TestSbml:
 class TestUnit(TestSbml):
     def test_init(self):
         assert_equals(self.my_unit.kind, "kg")
-        assert_equals(self.my_unit.e, -1)
-        assert_equals(self.my_unit.s, 0)
-        assert_equals(self.my_unit.m, 1)
+        assert_equals(self.my_unit.exponent, -1)
+        assert_equals(self.my_unit.scale, 0)
+        assert_equals(self.my_unit.multiplier, 1)
 
     def test_str(self):
-        assert_equals(str(self.my_unit), "kg:m=1 e=-1 s=0")
+        assert_equals(str(self.my_unit), "kg:scale=0 exponent=-1 multiplier=1")
 
 
 class TestUnitDefinition(TestSbml):
@@ -49,7 +49,7 @@ class TestUnitDefinition(TestSbml):
         self.my_def.add_unit(self.my_unit)
         self.my_def.add_unit(self.my_unit)
         assert_equals(str(self.my_def),
-                      " id=kg:m=1 e=-1 s=0; kg:m=1 e=-1 s=0")
+                      " id=kg:scale=0 exponent=-1 multiplier=1; kg:scale=0 exponent=-1 multiplier=1")
 
 
 class TestCompartment(TestSbml):
