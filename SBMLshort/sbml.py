@@ -2,6 +2,14 @@ import json
 
 
 class SbmlObject(object):
+    id = None
+
+    def __eq__(self, other):
+        return self.id == other.id
+
+    def __hash__(self):
+        return hash(self.id)
+
     def dict(self):
         for attr in self.__dict__:
             if self.__dict__[attr] is not None and self.__dict__[attr] != []:
@@ -25,11 +33,16 @@ class Model(SbmlObject):
         self.lengthUnits = length_units
         self.extentUnits = extent_units
         self.conversionFactor = conversion_factor
+        self.unitDefinitions = []
+        self.compartments = []
         self.species = []
         self.parameters = []
         self.rules = []
         self.reactions = []
         self.events = []
+
+    def add_unit_def(self, unitdef):
+        self.unitDefinitions.append(unitdef)
 
 
 class Unit(SbmlObject):
@@ -46,6 +59,12 @@ class Unit(SbmlObject):
             if attr != 'kind':
                 unit_info.append(str(attr) + '=' + str(value))
         return '%s:%s' % (unit_dict['kind'], ' '.join(unit_info))
+
+    def __eq__(self, other):
+        return self.kind == other.kind
+
+    def __hash__(self):
+        return hash(self.kind)
 
 
 class UnitDefinition(SbmlObject):
@@ -130,6 +149,12 @@ class Rule(SbmlObject):
         else:
             return ' %s' % self.body
 
+    def __eq__(self, other):
+        return self.body == other.body
+
+    def __hash__(self):
+        return hash(self.body)
+
 
 class Event(SbmlObject):
     def __init__(self, body):
@@ -137,6 +162,12 @@ class Event(SbmlObject):
 
     def __str__(self):
         return ' %s' % self.body
+
+    def __eq__(self, other):
+        return self.body == other.body
+
+    def __hash__(self):
+        return hash(self.body)
 
 
 class Reaction(SbmlObject):

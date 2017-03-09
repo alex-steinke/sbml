@@ -13,6 +13,7 @@
                             <li role="presentation" {% if path == '/' %}
                                 class="active" {% endif %}><a
                                     href="{% url 'model' %}">Model</a></li>
+                            {% if model.id %}
                             <li role="presentation" {% if path == '/units' %}
                                 class="active" {% endif %}><a
                                     href="{% url 'units' %}">Units</a></li>
@@ -41,16 +42,18 @@
                             <li role="presentation" {% if path == '/events' %}
                                 class="active" {% endif %}><a
                                     href="{% url 'events' %}">Events</a></li>
+                            {% endif %}
                         </ul>
                         <!-- Tab panes -->
                         <div class="tab-content"
                              style="border-width: 1px; border-style: solid; border-color: #ddd; padding:20px; border-top-width: 0px">
                             <div role="tabpanel"
                                  class="tab-pane {% if path == '/' %} active {% endif %}"
-                                 id="model">{% include "model.html" %}</div>
+                                 id="model">{% include "model.html" %}
+                            </div>
                             <div role="tabpanel"
                                  class="tab-pane {% if path == '/units' %} active {% endif %}"
-                                 id="units">units
+                                 id="units">{% include "units.html" %}
                             </div>
                             <div role="tabpanel"
                                  class="tab-pane {% if path == '/compartments' %} active {% endif %}"

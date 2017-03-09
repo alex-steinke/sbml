@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
 
     'bootstrap3',
     'SBMLsite'
@@ -122,11 +121,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.10/howto/static-files/
-
-STATIC_URL = '/static/'
-
 ##########################################################################
 # ######    A. Steinke - Settings for django-bootstrap3               ####
 ##########################################################################
@@ -134,5 +128,6 @@ BOOTSTRAP3 = {
     'error_css_class': 'bootstrap3-error',
     'required_css_class': 'bootstrap3-required',
     'javascript_in_head': True,
+    'include_jquery': True
 }
 # ------------------------------------------------------------------------

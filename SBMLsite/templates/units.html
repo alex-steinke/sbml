@@ -1,12 +1,149 @@
-<div class="form-group row">
-    <label for="inputKey" class="col-md-1 control-label">Key</label>
-    <div class="col-md-2">
-        <input type="text" class="form-control" id="inputKey"
-               placeholder="Key">
+{% if editUnitDef %}
+    <script type="text/javascript">
+        $(window).load(function () {
+            $('#editUnitDefinitionsModal').modal('show');
+        });
+    </script>
+{% endif %}
+
+
+{% for def in model.unitDefinitions %}
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading ">
+                <form action="/units" method="post">
+                    <div class="btn-toolbar pull-right">
+                        <button class="btn btn-xs btn-danger" type="submit"
+                                name="func" value="delDef_{{ def.id }}">del
+                        </button>
+                        <button class="btn btn-xs btn-warning" type="submit"
+                                name="func" value="editDef_{{ def.id }}">edit
+                        </button>
+                    </div>
+                </form>
+                <h3 class="panel-title" style="width:75%">{{ def.id }}</h3>
+            </div>
+            <div class="panel-body">
+                {% for unit in def.listOfUnits %}
+                    <span class="row">
+                    <div class="btn-toolbar pull-right">
+                        <button class="btn btn-xs btn-danger" type="submit"
+                                name="func" value="delDef_{{ def.id }}">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+                        <button class="btn btn-xs btn-warning" type="submit"
+                                name="func" value="editDef_{{ def.id }}">
+                            <span class="glyphicon glyphicon-edit"></span>
+                        </button>
+                    </div>
+                    <b>Kind: </b>{{ unit.kind }}
+                    <b>Exponent: </b>{{ unit.e }}
+                    <b>Scale: </b>{{ unit.s }}
+                    <b>Multiplier: </b>{{ unit.m }}
+                </span>
+                {% endfor %}
+            </div>
+        </div>
     </div>
-    <label for="inputValue" class="col-md-1 control-label">Value</label>
-    <div class="col-md-2">
-        <input type="text" class="form-control" id="inputValue"
-               placeholder="Value">
+{% endfor %}
+<button type="button" class="btn btn-default" data-toggle="modal"
+        data-target="#newUnitDefinitionsModal">New Unit Definitions
+</button>
+<button type="button" class="btn btn-default" data-toggle="modal"
+        data-target="#newUnitModal">New Unit
+</button>
+
+<!-- Modal new Unit Definition-->
+<div id="newUnitDefinitionsModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close"
+                        data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Unit Definitions</h4>
+            </div>
+            <div class="modal-body">
+                <form action="/units" method="post">
+                    <div class="input-group">
+                        {{ newUnitDef }}
+                        <span class="input-group-btn">
+            <button class="btn btn-default" type="submit">Create new Unit Definition</button>
+            </span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">Close
+                </button>
+            </div>
+    </div>
+    </div>
+</div>
+
+<!-- Modal edit Unit Definition-->
+<div id="editUnitDefinitionsModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close"
+                        data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Edit ID of the Unit Definition</h4>
+            </div>
+            <div class="modal-body">
+                <form action="/units" method="post">
+                    <div class="input-group">
+                        {{ editUnitDef }}
+                        <span class="input-group-btn">
+            <button class="btn btn-default" type="submit">Save</button>
+            </span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">Close
+                </button>
+            </div>
+    </div>
+    </div>
+</div>
+
+<!-- Modal new Unit -->
+<div id="newUnitModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="/units" method="post">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                            data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Create new Unit</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        {% for form_data in newUnit %}
+                            <div class="form-group row">
+                                <label for="inputKey"
+                                       class="col-md-3 control-label">{{ form_data.label }}</label>
+                                <div class="col-md-6">
+                                    {{ form_data }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-toolbar pull-right">
+                        <button type="button" class="btn btn-default"
+                                data-dismiss="modal">Close
+                        </button>
+                        <button class="btn btn-default btn pull-right"
+                                type="submit">Save
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
     </div>
 </div>
