@@ -1,7 +1,6 @@
 from django.views.generic import FormView
-from forms import NewModelForm, EditModelForm, NewUnitDefinitionForm, \
-    EditUnitDefinitionForm, NewUnitForm, EditUnitForm, CompartmentForm
-from SBMLshort.sbml import Model, UnitDefinition, Unit, Compartment
+from forms import *
+from SBMLshort.sbml import *
 from django.forms import Form
 
 
@@ -172,42 +171,78 @@ class UnitsView(FormView):
         return super(UnitsView, self).form_valid(form)
 
 
-class CompartmentView(FormView):
+class DefaultView(FormView):
     template_name = 'index.html'
-    success_url = "/compartments"
-    form_class = CompartmentForm
+    form_class = Form
+    sbmlclass = None
+    type = None
+    attr = None
 
     def get_initial(self):
-        initial = super(CompartmentView, self).get_initial()
+        initial = super(DefaultView, self).get_initial()
+        self.success_url = self.request.path
+        if self.request.path == '/compartments':
+            self.form_class = CompartmentForm
+            self.sbmlclass = Compartment
+            self.type = 'Compartment'
+            self.attr = 'compartments'
+        elif self.request.path == '/parameters':
+            self.form_class = ParameterForm
+            self.sbmlclass = Parameter
+            self.type = 'Parameter'
+            self.attr = 'parameters'
+        elif self.request.path == '/rules':
+            self.form_class = RuleForm
+            self.sbmlclass = Rule
+            self.type = 'Rule'
+            self.attr = 'rules'
+        elif self.request.path == '/events':
+            self.form_class = EventForm
+            self.sbmlclass = Event
+            self.type = 'Event'
+            self.attr = 'events'
+        elif self.request.path == '/species':
+            self.form_class = SpeciesForm
+            self.sbmlclass = Species
+            self.type = 'Species'
+            self.attr = 'species'
+        elif self.request.path == '/reactions':
+            self.form_class = ReactionForm
+            self.sbmlclass = Reaction
+            self.type = 'Reaction'
+            self.attr = 'reactions'
         return initial
 
     def get_context_data(self, **kwargs):
-        context = super(CompartmentView, self).get_context_data(**kwargs)
+        context = super(DefaultView, self).get_context_data(**kwargs)
+        print self.request.path
         context['path'] = self.request.path
         context['model'] = self.request.session['model']
-        context['form'] = CompartmentForm(initial={'func': 'new'})
+        context['default'] = self.request.session['model'].__dict__[self.attr]
+        context['form'] = self.form_class(initial={'func': 'new'})
+        context['type'] = self.type
         if 'edit' in self.request.session:
-            def_index = self.request.session['model'].compartments.index(
-                Compartment(self.request.session.pop('edit')))
-            comp = self.request.session['model'].compartments[
+            def_index = self.request.session['model'].__dict__[
+                self.attr].index(
+                self.sbmlclass(self.request.session.pop('edit')))
+            comp = self.request.session['model'].__dict__[self.attr][
                 def_index].__dict__
             comp['old'] = comp['id']
             comp['func'] = 'save'
-            print comp
-            context['edit'] = CompartmentForm(initial=comp)
+            context['edit'] = self.form_class(initial=comp)
         return context
 
     def post(self, request, *args, **kwargs):
+        self.get_initial()
         if 'del_' in request.POST['func']:
             def_id = self.request.POST['func'].replace('del_', '')
-            def_index = self.request.session['model'].compartments.index(
-                Compartment(def_id))
-            self.request.session['model'].compartments.pop(def_index)
+            def_index = self.request.session['model'].__dict__[
+                self.attr].index(
+                self.sbmlclass(def_id))
+            self.request.session['model'].__dict__[self.attr].pop(def_index)
         elif 'edit_' in request.POST['func']:
             self.request.session['edit'] = request.POST['func'].replace(
                 'edit_', '')
-        elif request.POST['func'] == 'save':
-            print self.request.POST
         form = self.get_form(self.form_class)
         form.is_valid()
         return self.form_valid(form)
@@ -216,14 +251,15 @@ class CompartmentView(FormView):
         data = form.cleaned_data
         param = {}
         for key, value in data.iteritems():
-            if key in Compartment.vars:
+            if key in self.sbmlclass.vars:
                 param[key] = value
         if data['func'] == 'new':
-            comp = Compartment(**param)
-            self.request.session['model'].compartments.append(comp)
+            comp = self.sbmlclass(**param)
+            self.request.session['model'].__dict__[self.attr].append(comp)
         if data['func'] == 'save':
-            def_index = self.request.session['model'].compartments.index(
-                Compartment(data['old']))
-            self.request.session['model'].compartments[
-                def_index] = Compartment(**param)
-        return super(CompartmentView, self).form_valid(form)
+            def_index = self.request.session['model'].__dict__[
+                self.attr].index(
+                self.sbmlclass(data['old']))
+            self.request.session['model'].__dict__[self.attr][
+                def_index] = self.sbmlclass(**param)
+        return super(DefaultView, self).form_valid(form)

@@ -14,16 +14,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url
-from views import ModelView, UnitsView, CompartmentView
+from views import ModelView, UnitsView, DefaultView
 
 
 urlpatterns = [
     url('units', UnitsView.as_view(), name='units'),
-    url('compartments', CompartmentView.as_view(), name='compartments'),
-    url('species', ModelView.as_view(), name='species'),
-    url('parameters', ModelView.as_view(), name='parameters'),
-    url('rules', ModelView.as_view(), name='rules'),
-    url('reactions', ModelView.as_view(), name='reactions'),
-    url('events', ModelView.as_view(), name='events'),
+    url('compartments', DefaultView.as_view(), name='compartments'),
+    url('species', DefaultView.as_view(), name='species'),
+    url('parameters', DefaultView.as_view(), name='parameters'),
+    url('rules', DefaultView.as_view(), name='rules'),
+    url('reactions', DefaultView.as_view(), name='reactions'),
+    url('events', DefaultView.as_view(), name='events'),
     url(r'^$', ModelView.as_view(), name='model'),
 ]

@@ -57,27 +57,34 @@
                             </div>
                             <div role="tabpanel"
                                  class="tab-pane {% if path == '/compartments' %} active {% endif %}"
-                                 id="compartments">{% include "compartments.html" %}
+                                 id="compartments">
+                                {% if path == '/compartments' %}
+                                    {% include "default.html" %} {% endif %}
                             </div>
                             <div role="tabpanel"
                                  class="tab-pane {% if path == '/species' %} active {% endif %}"
-                                 id="species">species
+                                 id="species">{% if path == '/species' %}
+                                {% include "default.html" %} {% endif %}
                             </div>
                             <div role="tabpanel"
                                  class="tab-pane {% if path == '/parameters' %} active {% endif %}"
-                                 id="parameters">parameters
+                                 id="parameters">{% if path == '/parameters' %}
+                                {% include "default.html" %} {% endif %}
                             </div>
                             <div role="tabpanel"
                                  class="tab-pane {% if path == '/rules' %} active {% endif %}"
-                                 id="rules">rules
+                                 id="rules">{% if path == '/rules' %}
+                                {% include "default.html" %} {% endif %}
                             </div>
                             <div role="tabpanel"
                                  class="tab-pane {% if path == '/reactions' %} active {% endif %}"
-                                 id="reactions">reactions
+                                 id="reactions">{% if path == '/reactions' %}
+                                {% include "default.html" %} {% endif %}
                             </div>
                             <div role="tabpanel"
                                  class="tab-pane {% if path == '/events' %} active {% endif %}"
-                                 id="events">events
+                                 id="events">{% if path == '/events' %}
+                                {% include "default.html" %} {% endif %}
                             </div>
                         </div>
                     </div>
