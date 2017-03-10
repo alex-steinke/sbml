@@ -1,0 +1,26 @@
+{% if model.id %}
+    <form class="form-horizontal" role="form" action="/" method="post">
+        <div class="form-group">
+            {% for form_data in form %}
+                <div class="form-group row">
+                    <label for="inputKey"
+                           class="col-md-3 control-label">{{ form_data.label }}</label>
+                    <div class="col-md-6">
+                        {{ form_data }}
+                    </div>
+                </div>
+            {% endfor %}
+            <button class="btn btn-default btn pull-right" type="submit">Save
+            </button>
+        </div>
+    </form>
+{% else %}
+    <form action="/" method="post">
+        <div class="input-group">
+            {{ form }}
+            <span class="input-group-btn">
+        <button class="btn btn-default" type="submit">Create new model</button>
+      </span>
+        </div>
+    </form>
+{% endif %}

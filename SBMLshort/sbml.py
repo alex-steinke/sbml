@@ -2,6 +2,14 @@ import json
 
 
 class SbmlObject(object):
+    id = None
+
+    def __eq__(self, other):
+        return self.id == other.id
+
+    def __hash__(self):
+        return hash(self.id)
+
     def dict(self):
         for attr in self.__dict__:
             if self.__dict__[attr] is not None and self.__dict__[attr] != []:
@@ -12,25 +20,37 @@ class SbmlObject(object):
                           default=lambda o: {c[0]: c[1] for c in o.dict()})
 
 
-class Model:
-    def __init__(self, name, substance_units, time_units, volume_units,
-                 area_units, length_units, extent_units, conversion_factor):
+class Model(SbmlObject):
+    def __init__(self, mid, name=None, substance_units=None, time_units=None,
+                 volume_units=None, area_units=None, length_units=None,
+                 extent_units=None, conversion_factor=None):
+        self.id = mid
         self.name = name
-        self.s = substance_units
-        self.t = time_units
-        self.v = volume_units
-        self.a = area_units
-        self.l = length_units
-        self.e = extent_units
-        self.c = conversion_factor
+        self.substanceUnits = substance_units
+        self.timeUnits = time_units
+        self.volumeUnits = volume_units
+        self.areaUnits = area_units
+        self.lengthUnits = length_units
+        self.extentUnits = extent_units
+        self.conversionFactor = conversion_factor
+        self.unitDefinitions = []
+        self.compartments = []
+        self.species = []
+        self.parameters = []
+        self.rules = []
+        self.reactions = []
+        self.events = []
+
+    def add_unit_def(self, unitdef):
+        self.unitDefinitions.append(unitdef)
 
 
 class Unit(SbmlObject):
     def __init__(self, kind=None, exponent=None, scale=None, multiplier=None):
         self.kind = kind
-        self.e = exponent
-        self.s = scale
-        self.m = multiplier
+        self.exponent = exponent
+        self.scale = scale
+        self.multiplier = multiplier
 
     def __str__(self):
         unit_dict = dict(self.dict())
@@ -39,6 +59,12 @@ class Unit(SbmlObject):
             if attr != 'kind':
                 unit_info.append(str(attr) + '=' + str(value))
         return '%s:%s' % (unit_dict['kind'], ' '.join(unit_info))
+
+    def __eq__(self, other):
+        return self.kind == other.kind
+
+    def __hash__(self):
+        return hash(self.kind)
 
 
 class UnitDefinition(SbmlObject):
@@ -58,8 +84,10 @@ class UnitDefinition(SbmlObject):
 
 
 class Compartment(SbmlObject):
-    def __init__(self, compid, name=None, size=None, constant=None):
-        self.id = compid
+    vars = ['id', 'name', 'size', 'constant']
+
+    def __init__(self, id, name=None, size=None, constant=None):
+        self.id = id
         self.size = size
         self.constant = constant
         self.name = name
@@ -74,14 +102,18 @@ class Compartment(SbmlObject):
 
 
 class Species(SbmlObject):
-    def __init__(self, sid, compartment, initial_amount,
-                 has_only_substance_units=False, boundary_condition=False,
-                 constant=False, name=None):
-        self.id = sid
+    vars = ['id', 'compartment', 'initial_amount',
+            'has_only_substance_units', 'boundary_condition',
+            'constant', 'name']
+
+    def __init__(self, id=None, compartment=None, initial_amount=None,
+                 has_only_substance_units=None, boundary_condition=None,
+                 constant=None, name=None):
+        self.id = id
         self.compartment = compartment
-        self.initialAmount = initial_amount
-        self.hasOnlySubstanceUnits = has_only_substance_units
-        self.boundaryCondition = boundary_condition
+        self.initial_amount = initial_amount
+        self.has_only_substance_units = has_only_substance_units
+        self.boundary_condition = boundary_condition
         self.constant = constant
         self.name = name
 
@@ -91,15 +123,17 @@ class Species(SbmlObject):
         bool_attr = bool_attr + 'b' if self.boundaryCondition else bool_attr
         bool_attr = bool_attr + 'c' if self.constant else bool_attr
         result = ' %s:%s=%s %s' % (
-        self.compartment, sid, self.initialAmount, bool_attr)
+            self.compartment, sid, self.initialAmount, bool_attr)
         result = '%s "%s"' % (
-        result, self.name) if self.name is not None else result
+            result, self.name) if self.name is not None else result
         return result
 
 
 class Parameter(SbmlObject):
-    def __init__(self, pid, value, name=None, constant=False):
-        self.id = pid
+    vars = ['id', 'name', 'value', 'constant']
+
+    def __init__(self, id=None, value=None, name=None, constant=False):
+        self.id = id
         self.value = value
         self.name = name
         self.constant = constant
@@ -108,38 +142,72 @@ class Parameter(SbmlObject):
         result = ' %s=%s' % (self.id, self.value)
         result = '%sv' % result if self.constant else result
         result = '%s "%s"' % (
-        result, self.name) if self.name is not None else result
+            result, self.name) if self.name is not None else result
         return result
 
 
 class Rule(SbmlObject):
-    def __init__(self, body, ruletype):
-        self.body = body
-        self.type = ruletype
+    vars = ['id']
+
+    def __init__(self, id=None):
+        self.id = id
 
     def __str__(self):
-        if self.type == "rate":
-            return ' @rate:%s' % self.body
-        else:
-            return ' %s' % self.body
+        return str(self.id)
+
+    def __eq__(self, other):
+        return self.id == other.id
+
+    def __hash__(self):
+        return hash(self.id)
 
 
 class Event(SbmlObject):
-    def __init__(self, body):
-        self.body = body
+    vars = ['id']
+
+    def __init__(self, id=None):
+        self.id = id
 
     def __str__(self):
-        return ' %s' % self.body
+        return ' %s' % self.id
+
+    def __eq__(self, other):
+        return self.id == other.id
+
+    def __hash__(self):
+        return hash(self.id)
 
 
 class Reaction(SbmlObject):
-    def __init__(self, reacttype, rid, reagents, products, body, params=[],
+    vars = ['id', 'name', 'body', 'calc']
+
+    def __init__(self, id=None, name=None, body=None, calc=None):
+        self.id = id
+        self.name = name
+        self.body = body
+        self.calc = calc
+
+    def __str__(self):
+        return ' %s' % self.id
+
+    def __eq__(self, other):
+        return self.id == other.id
+
+    def __hash__(self):
+        return hash(self.id)
+
+
+"""
+class Reaction(SbmlObject):
+    vars = ['reacttype', 'rid', 'reagents', 'products', 'body', 'params', 'name']
+
+    def __init__(self, reacttype=None, id=None, reagents=None, products=None, body=None, params=None,
                  name=None):
         self.type = reacttype
         self.reagents = reagents
         self.products = products
         self.params = params
-        self.id = rid
+        self.id = id
         self.name = name
         self.body = body
 
@@ -150,6 +218,7 @@ class Reaction(SbmlObject):
             ['%s=%s' % (param.id, param.value) for param in self.params])
         head = '@%s=%s "%s"' % (self.type, self.id,
                                 self.name) if self.name is not None else '@%s=%s' % (
-        self.type, self.id)
+            self.type, self.id)
         result = '%s\n %s -> %s\n %s' % (head, reag, prod, self.body)
         return '%s : %s' % (result, param) if len(param) > 0 else result
+"""
