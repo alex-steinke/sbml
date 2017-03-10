@@ -23,6 +23,8 @@ class ModelView(FormView):
     def get_context_data(self, **kwargs):
         context = super(ModelView, self).get_context_data(**kwargs)
         context['path'] = self.request.path
+        if 'gen' in self.request.session:
+            context['gen'] = self.request.session['gen']
         if 'model' in self.request.session:
             context['model'] = self.request.session['model']
             context['form'] = EditModelForm(initial=self.get_initial())
@@ -33,6 +35,37 @@ class ModelView(FormView):
     def post(self, request, *args, **kwargs):
         if 'model' in self.request.session:
             form = self.edit_form_class
+            print self.request.POST
+            if 'gen' in self.request.POST:
+                print self.request.session['model']
+                genstr = str(self.request.session['model'])
+                if len(self.request.session['model'].compartments) > 0:
+                    genstr = "%s\n@compartments" % genstr
+                    for com in self.request.session['model'].compartments:
+                        genstr = "%s\n%s" % (genstr, com)
+                if len(self.request.session['model'].species) > 0:
+                    genstr = "%s\n@species" % genstr
+                    for com in self.request.session['model'].species:
+                        genstr = "%s\n%s" % (genstr, com)
+                if len(self.request.session['model'].parameters) > 0:
+                    genstr = "%s\n@parameters" % genstr
+                    for com in self.request.session['model'].parameters:
+                        genstr = "%s\n%s" % (genstr, com)
+                self.request.session['gen'] = genstr
+                if len(self.request.session['model'].rules) > 0:
+                    genstr = "%s\n@rules" % genstr
+                    for com in self.request.session['model'].rules:
+                        genstr = "%s\n%s" % (genstr, com)
+                if len(self.request.session['model'].reactions) > 0:
+                    genstr = "%s\n@reactions" % genstr
+                    for com in self.request.session['model'].reactions:
+                        genstr = "%s\n%s" % (genstr, com)
+                if len(self.request.session['model'].events) > 0:
+                    genstr = "%s\n@events" % genstr
+                    for com in self.request.session['model'].events:
+                        genstr = "%s\n%s" % (genstr, com)
+                self.request.session['gen'] = genstr
+                form = Form
         else:
             form = self.new_form_class
         form = self.get_form(form)
@@ -43,9 +76,10 @@ class ModelView(FormView):
         if 'model' not in self.request.session:
             self.request.session['model'] = Model(form.cleaned_data['id'])
         else:
-            for update in form.cleaned_data.keys():
-                setattr(self.request.session['model'], update,
-                        form.cleaned_data[update])
+            if len(form.cleaned_data.keys()) != 0:
+                for update in form.cleaned_data.keys():
+                    setattr(self.request.session['model'], update,
+                            form.cleaned_data[update])
         return super(ModelView, self).form_valid(form)
 
 
@@ -62,6 +96,8 @@ class UnitsView(FormView):
         context = super(UnitsView, self).get_context_data(**kwargs)
         context['path'] = self.request.path
         context['model'] = self.request.session['model']
+        if 'gen' in self.request.session:
+            context['gen'] = self.request.session['gen']
         context['newUnitDef'] = NewUnitDefinitionForm(
             initial={'func': 'newDef'})
         context['newUnit'] = NewUnitForm(initial={'func': 'newUnit'},
@@ -221,6 +257,8 @@ class DefaultView(FormView):
         context['default'] = self.request.session['model'].__dict__[self.attr]
         context['form'] = self.form_class(initial={'func': 'new'})
         context['type'] = self.type
+        if 'gen' in self.request.session:
+            context['gen'] = self.request.session['gen']
         if 'edit' in self.request.session:
             def_index = self.request.session['model'].__dict__[
                 self.attr].index(

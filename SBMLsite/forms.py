@@ -274,7 +274,7 @@ class SpeciesForm(DefaultForm):
 
 class ReactionForm(DefaultForm):
     id = CharField(
-        label="Reaction ID",
+        label="Reaction ID (e.g. r=Conversion)",
         max_length=80,
         required=True,
     )

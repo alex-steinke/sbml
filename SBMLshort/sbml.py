@@ -44,6 +44,11 @@ class Model(SbmlObject):
     def add_unit_def(self, unitdef):
         self.unitDefinitions.append(unitdef)
 
+    def __str__(self):
+        result = '@model:3.3.1=%s' % (self.id)
+        result = '%s "%s"' % (result, self.name) if self.name else result
+        return result
+
 
 class Unit(SbmlObject):
     def __init__(self, kind=None, exponent=None, scale=None, multiplier=None):
@@ -119,11 +124,11 @@ class Species(SbmlObject):
 
     def __str__(self):
         sid = '[%s]' % self.id if self.constant else self.id
-        bool_attr = 's' if self.hasOnlySubstanceUnits else ''
-        bool_attr = bool_attr + 'b' if self.boundaryCondition else bool_attr
-        bool_attr = bool_attr + 'c' if self.constant else bool_attr
+        bool_attr = 's' if self.has_only_substance_units == 'True' else ''
+        bool_attr = bool_attr + 'b' if self.boundary_condition == 'True' else bool_attr
+        bool_attr = bool_attr + 'c' if self.constant == 'True' else bool_attr
         result = ' %s:%s=%s %s' % (
-            self.compartment, sid, self.initialAmount, bool_attr)
+            self.compartment, sid, self.initial_amount, bool_attr)
         result = '%s "%s"' % (
             result, self.name) if self.name is not None else result
         return result
@@ -187,14 +192,17 @@ class Reaction(SbmlObject):
         self.body = body
         self.calc = calc
 
-    def __str__(self):
-        return ' %s' % self.id
-
     def __eq__(self, other):
         return self.id == other.id
 
     def __hash__(self):
         return hash(self.id)
+
+    def __str__(self):
+        result = "@%s" % self.id
+        result = '%s "%s"' % (result, self.name) if self.name else result
+        result = "%s\n%s\n%s" % (result, self.body, self.calc)
+        return result
 
 
 """
