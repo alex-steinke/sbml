@@ -4,6 +4,7 @@ from SBMLshort.sbml import *
 from django.forms import Form
 
 
+# View class for model
 class ModelView(FormView):
     template_name = 'index.html'
     success_url = "/"
@@ -20,6 +21,7 @@ class ModelView(FormView):
                     input_value]
         return initial
 
+    # defines form to show depending on session
     def get_context_data(self, **kwargs):
         context = super(ModelView, self).get_context_data(**kwargs)
         context['path'] = self.request.path
@@ -34,8 +36,10 @@ class ModelView(FormView):
 
     def post(self, request, *args, **kwargs):
         if 'model' in self.request.session:
+            # show edit form
             form = self.edit_form_class
             print self.request.POST
+            # If generate button was pressed
             if 'gen' in self.request.POST:
                 print self.request.session['model']
                 genstr = str(self.request.session['model'])
@@ -67,11 +71,13 @@ class ModelView(FormView):
                 self.request.session['gen'] = genstr
                 form = Form
         else:
+            # show create new model form
             form = self.new_form_class
         form = self.get_form(form)
         form.is_valid()
         return self.form_valid(form)
 
+    # update model or save new one
     def form_valid(self, form):
         if 'model' not in self.request.session:
             self.request.session['model'] = Model(form.cleaned_data['id'])
@@ -83,6 +89,7 @@ class ModelView(FormView):
         return super(ModelView, self).form_valid(form)
 
 
+# View for Units page
 class UnitsView(FormView):
     template_name = 'index.html'
     success_url = "/units"
