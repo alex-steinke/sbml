@@ -8,9 +8,6 @@ class ModelForm(Form):
         required=True,
     )
 
-    def __init__(self, *args, **kwargs):
-        super(ModelForm, self).__init__(*args, **kwargs)
-
 
 class NewModelForm(ModelForm):
     id = CharField(
@@ -158,7 +155,24 @@ class EditUnitForm(UnitForm):
         super(EditUnitForm, self).__init__(*args, **kwargs)
 
 
-class CompartmentForm(Form):
+class DefaultForm(Form):
+    func = CharField(
+        label="",
+        widget=HiddenInput()
+    )
+    old = CharField(
+        label="",
+        widget=HiddenInput()
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(DefaultForm, self).__init__(*args, **kwargs)
+        for field_name in self.fields.keys():
+            self.fields[field_name].widget.attrs.update(
+                {'class': 'form-control'})
+
+
+class CompartmentForm(DefaultForm):
     id = CharField(
         label="Compartment ID",
         max_length=80,
@@ -179,17 +193,103 @@ class CompartmentForm(Form):
         max_length=80,
         required=False,
     )
-    func = CharField(
-        label="",
-        widget=HiddenInput()
+
+
+class ParameterForm(DefaultForm):
+    id = CharField(
+        label="Parameter ID",
+        max_length=80,
+        required=True,
     )
-    old = CharField(
-        label="",
-        widget=HiddenInput()
+    name = CharField(
+        label="Name",
+        max_length=80,
+        required=False,
+    )
+    value = CharField(
+        label="Value",
+        max_length=80,
+        required=True,
+    )
+    constant = CharField(
+        label="Constant",
+        max_length=80,
+        required=False,
     )
 
-    def __init__(self, *args, **kwargs):
-        super(CompartmentForm, self).__init__(*args, **kwargs)
-        for field_name in self.fields.keys():
-            self.fields[field_name].widget.attrs.update(
-                {'class': 'form-control'})
+
+class RuleForm(DefaultForm):
+    id = CharField(
+        label="SBML short rule",
+        max_length=80,
+        required=True,
+    )
+
+
+class EventForm(DefaultForm):
+    id = CharField(
+        label="SBML short Event",
+        max_length=80,
+        required=True,
+    )
+
+
+class SpeciesForm(DefaultForm):
+    id = CharField(
+        label="Species ID",
+        max_length=80,
+        required=True,
+    )
+    compartment = CharField(
+        label="Compartment",
+        max_length=80,
+        required=True,
+    )
+    initial_amount = CharField(
+        label="Initial Amount",
+        max_length=80,
+        required=True,
+    )
+    has_only_substance_units = CharField(
+        label="Has only substance units (False / True)",
+        max_length=80,
+        required=False,
+    )
+    boundary_condition = CharField(
+        label="Boundary Condition (False / True)",
+        max_length=80,
+        required=False,
+    )
+    constant = CharField(
+        label="Constant (False / True)",
+        max_length=80,
+        required=False,
+    )
+    name = CharField(
+        label="Name",
+        max_length=80,
+        required=False,
+    )
+
+
+class ReactionForm(DefaultForm):
+    id = CharField(
+        label="Reaction ID",
+        max_length=80,
+        required=True,
+    )
+    body = CharField(
+        label="Body",
+        max_length=80,
+        required=True,
+    )
+    calc = CharField(
+        label="Calculation",
+        max_length=80,
+        required=True,
+    )
+    name = CharField(
+        label="Name",
+        max_length=80,
+        required=False,
+    )
