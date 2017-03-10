@@ -24,23 +24,43 @@ SECRET_KEY = 'r36tie^t5jy^d%-@f*q+&y*_n7!#9p@-pvg8cqjpvjdg*mrkyb'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+##########################################################################
+# ######    A. Steinke - Hosts for Docker to work                     ####
+##########################################################################
 ALLOWED_HOSTS = ['0.0.0.0',
-                 '192.168.99.100']
+                 '192.168.99.100',
+                 'localhost',
+                 '127.0.0.1']
+# ------------------------------------------------------------------------
 
 # Application definition
 
+##########################################################################
+# ######    A. Steinke - Sbootstrap3                                  ####
+##########################################################################
 INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+
+    'bootstrap3',
     'SBMLsite'
 ]
+# ------------------------------------------------------------------------
 
-MIDDLEWARE = []
-
+##########################################################################
+# ######    A. Steinke - Session Middlware and PickleSerializer       ####
+##########################################################################
+MIDDLEWARE = ['django.contrib.sessions.middleware.SessionMiddleware',
+              'django.contrib.messages.middleware.MessageMiddleware']
+SESSION_ENGINE = "django.contrib.sessions.backends.file"
+SESSION_FILE_PATH = os.path.join(BASE_DIR, 'tmp')
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 ROOT_URLCONF = 'SBMLsite.urls'
+SESSION_COOKIE_AGE = 20 * 60
+SESSION_SAVE_EVERY_REQUEST = True
+# ------------------------------------------------------------------------
 
 TEMPLATES = [
     {
@@ -93,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/London'
 
 USE_I18N = True
 
@@ -101,7 +121,13 @@ USE_L10N = True
 
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.10/howto/static-files/
-
-STATIC_URL = '/static/'
+##########################################################################
+# ######    A. Steinke - Settings for django-bootstrap3               ####
+##########################################################################
+BOOTSTRAP3 = {
+    'error_css_class': 'bootstrap3-error',
+    'required_css_class': 'bootstrap3-required',
+    'javascript_in_head': True,
+    'include_jquery': True
+}
+# ------------------------------------------------------------------------

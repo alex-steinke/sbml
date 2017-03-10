@@ -1,9 +1,112 @@
 {% extends 'main.html' %}
 {% block 'content' %}
-    <div class="container">
-        <div class="starter-template">
-            <h1>Bootstrap</h1>
-            <p class="lead"></p>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-9 col-md-6 col-lg-8">
+                <div class="panel panel-primary" style="margin-top: 50px">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Editor</h3>
+                    </div>
+                    <div class="panel-body">
+                        <!-- Nav tabs -->
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" {% if path == '/' %}
+                                class="active" {% endif %}><a
+                                    href="{% url 'model' %}">Model</a></li>
+                            {% if model.id %}
+                            <li role="presentation" {% if path == '/units' %}
+                                class="active" {% endif %}><a
+                                    href="{% url 'units' %}">Units</a></li>
+                            <li role="presentation"
+                                    {% if path == '/compartments' %}
+                                class="active" {% endif %}><a
+                                    href="{% url 'compartments' %}">Compartments</a>
+                            </li>
+                            <li role="presentation" {% if path == '/species' %}
+                                class="active" {% endif %}><a
+                                    href="{% url 'species' %}">Species</a></li>
+                            .
+                            <li role="presentation"
+                                    {% if path == '/parameters' %}
+                                class="active" {% endif %}><a
+                                    href="{% url 'parameters' %}">Parameters</a>
+                            </li>
+                            <li role="presentation" {% if path == '/rules' %}
+                                class="active" {% endif %}><a
+                                    href="{% url 'rules' %}">Rules</a></li>
+                            <li role="presentation"
+                                    {% if path == '/reactions' %}
+                                class="active" {% endif %}><a
+                                    href="{% url 'reactions' %}">Reactions</a>
+                            </li>
+                            <li role="presentation" {% if path == '/events' %}
+                                class="active" {% endif %}><a
+                                    href="{% url 'events' %}">Events</a></li>
+                            {% endif %}
+                        </ul>
+                        <!-- Tab panes -->
+                        <div class="tab-content"
+                             style="border-width: 1px; border-style: solid; border-color: #ddd; padding:20px; border-top-width: 0px">
+                            <div role="tabpanel"
+                                 class="tab-pane {% if path == '/' %} active {% endif %}"
+                                 id="model">{% include "model.html" %}
+                            </div>
+                            <div role="tabpanel"
+                                 class="tab-pane {% if path == '/units' %} active {% endif %}"
+                                 id="units">{% include "units.html" %}
+                            </div>
+                            <div role="tabpanel"
+                                 class="tab-pane {% if path == '/compartments' %} active {% endif %}"
+                                 id="compartments">
+                                {% if path == '/compartments' %}
+                                    {% include "default.html" %} {% endif %}
+                            </div>
+                            <div role="tabpanel"
+                                 class="tab-pane {% if path == '/species' %} active {% endif %}"
+                                 id="species">{% if path == '/species' %}
+                                {% include "default.html" %} {% endif %}
+                            </div>
+                            <div role="tabpanel"
+                                 class="tab-pane {% if path == '/parameters' %} active {% endif %}"
+                                 id="parameters">{% if path == '/parameters' %}
+                                {% include "default.html" %} {% endif %}
+                            </div>
+                            <div role="tabpanel"
+                                 class="tab-pane {% if path == '/rules' %} active {% endif %}"
+                                 id="rules">{% if path == '/rules' %}
+                                {% include "default.html" %} {% endif %}
+                            </div>
+                            <div role="tabpanel"
+                                 class="tab-pane {% if path == '/reactions' %} active {% endif %}"
+                                 id="reactions">{% if path == '/reactions' %}
+                                {% include "default.html" %} {% endif %}
+                            </div>
+                            <div role="tabpanel"
+                                 class="tab-pane {% if path == '/events' %} active {% endif %}"
+                                 id="events">{% if path == '/events' %}
+                                {% include "default.html" %} {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form class="form-horizontal" role="form" action="/"
+                      method="post">
+                    <button class="btn btn-primary pull-right"
+                            type="submit" name="gen" value="gen">Generate SBML
+                    </button>
+                </form>
+            </div>
+            <div class="col-sm-3 col-md-6 col-lg-4">
+                <div class="panel panel-primary" style="margin-top: 50px">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">SBML-short</h3>
+                    </div>
+                    <div class="panel-body">
+                        <textarea class="form-control" rows="25"
+                                  id="comment">{{ gen }}</textarea>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
